@@ -4,6 +4,7 @@ import en from './localization/en'
 import fr from './localization/fr'
 import i18n from "i18next";
 import {  initReactI18next } from "react-i18next";
+import languageDetectorPlugin from './utils/languageDetectorPlugin';
 
 export const defaultNS = "en";
 const resources = {
@@ -17,6 +18,7 @@ const resources = {
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
+  .use(languageDetectorPlugin)
   .init({
     // the translations
     resources: resources,

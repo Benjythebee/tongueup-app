@@ -40,7 +40,6 @@ export const MomentaryNotesCard: React.FC<{showConfetti:()=>void}> = ({showConfe
                 <Text style={styles.celebrateText}>{t("general.KeepUpTheGoodWork")}!</Text>
           </View>):(
             <>
-              <Text style={styles.text}>{t("general.RightThisInstant")}</Text>
               <View
                 style={{
                   flexDirection: "row",

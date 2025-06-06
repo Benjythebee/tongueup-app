@@ -54,7 +54,8 @@ export const PeriodicThoughtsCard: React.FC = () => {
             <View
               style={{
                 flexDirection: "column",
-                padding: 0,
+                // padding: 0,
+                paddingVertical:10,
                 gap: 10,
               }}
             >
@@ -67,7 +68,7 @@ export const PeriodicThoughtsCard: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <Text style={[styles.text, { flex: 1 }]}>
+                <Text style={[styles.text, {paddingLeft:15,fontSize: 24, flex: 1 }]}>
                   {t("buttons.IHaveThoughtAboutIt")}
                 </Text>
                 <NumberSelector
@@ -88,7 +89,7 @@ export const PeriodicThoughtsCard: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                <Text style={[styles.text, { flex: 1 }]}>
+                <Text style={[styles.text, { paddingLeft:15,fontSize: 24, flex: 1 }]}>
                   {t("buttons.TongueWasPushingMyTeeth")}
                 </Text>
                 <NumberSelector

@@ -10,16 +10,17 @@ export default {
         general:{
                 WhereIsYourTongue:"Où est ta langue?",
                 KeepUpTheGoodWork:"Continuez comme ça!",
-                RightThisInstant:"En ce moment même, enregistrez où se trouve ta langue. Cela t'aidera à suivre ton progrès au fil du temps.",
-                MyTongueWasOnRoof:"Ma langue était collée au toit de ma bouche",
-                MyTongueWasPushingTeeth:"Je ne sais pas ou ma langue poussait mes dents",
-                ComingOutOfMeeting:"Tu viens de sortir d'une réunion ou d'un cours? Enregistre tes pensées",
+                RightThisInstant:"En ce moment même, où est votre langue?",
+                MyTongueWasOnRoof:"Ma langue est bien collée au palais",
+                MyTongueWasPushingTeeth:"Je ne sais pas/ ma langue pousse mes dents",
+                ComingOutOfMeeting:"Tu viens de sortir d’une réunion, d’un cours, et tu n’avais pas ton téléphone, As-tu pensé à la position de ta langue?",
                 description:{
                         notificationEnabled:"Une notification sera envoyée",
                         reminder:"Nous t'enverrons une notification pour te rappeler !",
                         tellUsWhatQuietTime:"Dis-nous quand ne pas te déranger avec des notifications.",
                 },
                 label:{
+                        settingsLanguage:"Language",
                         clearProgress:"Efface tes données",
                         darkTheme:"Thème sombre",
                         RemindMe:"Rappelle-moi",
@@ -46,8 +47,8 @@ export default {
                 delete:"Supprimer",
                 confirm:"Confirmer",
                 cancel:"Annuler",
-                IHaveThoughtAboutIt:"J'y ai pensé",
-                TongueWasPushingMyTeeth:"Ma langue poussait mes dents",
+                IHaveThoughtAboutIt:"Oui",
+                TongueWasPushingMyTeeth:"Non",
         },
         singleWord:{
                 times:"fois",

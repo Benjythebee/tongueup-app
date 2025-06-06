@@ -16,6 +16,7 @@ import Icon from "@react-native-vector-icons/lucide";
 import Button from "../components/Button";
 import { useSavedTimeseries } from "../context/TimeSeriesData";
 import { useTranslation } from "react-i18next";
+import LanguageSelector from "../components/LanguageSelector";
 
 const SettingsScreen: React.FC = () => {
   const { colors,theme,toggleTheme } = useTheme();
@@ -44,7 +45,7 @@ const SettingsScreen: React.FC = () => {
             trackColor={{ false: "#767577", true: "#81b0ff" }}
             thumbColor={isDark ? "#f4f3f4" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
-            style={{ marginVertical: 10, transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }]  }}
+            style={{ marginVertical: 10, transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }]  }}
               />
         </View>
         <View style={styles.settingContainer}>
@@ -61,6 +62,15 @@ const SettingsScreen: React.FC = () => {
             Alert.alert("Data cleared", "All your saved progress has been cleared.");
           }}
           />
+
+        </View>
+
+        <View style={styles.settingContainer}>
+          <View style={{flexDirection: 'row', gap:5, alignItems: 'center'}}>
+            <Icon name="languages" size={24} color={colors.text} />
+            <Text style={styles.settingLabel}>{t("general.label.settingsLanguage")}</Text>
+          </View>
+          <LanguageSelector />
 
         </View>
       </ScrollView>

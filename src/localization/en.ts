@@ -10,16 +10,17 @@ export default {
         general:{
                 WhereIsYourTongue:"Where is your tongue?",
                 KeepUpTheGoodWork:"Keep up the good work!",
-                RightThisInstant:"Right this instant, record where you tongue is placed. This will help you track your progress over time.",
+                RightThisInstant:"Right now, where is your tongue?",
                 MyTongueWasOnRoof:"My tongue was stuck to the roof of my mouth",
-                MyTongueWasPushingTeeth:"I don't know or my tongue was pushing my teeth",
-                ComingOutOfMeeting:"Coming out of meeting or a class? Record your thoughts",
+                MyTongueWasPushingTeeth:"I don't know / my tongue was pushing my teeth",
+                ComingOutOfMeeting:"Coming out of meeting or a class and you didn't have your phone? Have you thought about the position of your tongue?",
                 description:{
                         notificationEnabled:"A notification will be sent",
                         reminder:"We'll send you a notification to remind you about it!",
                         tellUsWhatQuietTime:"Tell us what time we should not bother you with notifications.",
                 },
                 label:{
+                        settingsLanguage:"Language",
                         clearProgress:"Clear your data",
                         darkTheme:"Dark Theme",
                         RemindMe:"Remind me",
@@ -46,8 +47,8 @@ export default {
                 delete:"Delete",
                 confirm:"Confirm",
                 cancel:"Cancel",
-                IHaveThoughtAboutIt:"I have thought about it",
-                TongueWasPushingMyTeeth:"My tongue was pushing my teeth",
+                IHaveThoughtAboutIt:"Yes",
+                TongueWasPushingMyTeeth:"No",
         },
         singleWord:{
                 times:"times",
