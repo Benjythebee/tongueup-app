@@ -1,4 +1,5 @@
 
+import { getLocales } from 'expo-localization';
 import en from './localization/en'
 import fr from './localization/fr'
 import i18n from "i18next";
@@ -19,8 +20,8 @@ i18n
   .init({
     // the translations
     resources: resources,
-    lng: "fr",// getLocales()[0].languageCode||undefined, // if you're using a language detector, do not define the lng option
-    fallbackLng: "fr",
+    lng: getLocales()[0].languageCode||undefined, // if you're using a language detector, do not define the lng option
+    fallbackLng: "en",
     interpolation: {
       escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
     }

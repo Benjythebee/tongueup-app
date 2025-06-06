@@ -15,7 +15,7 @@ const HomeScreen: React.FC = () => {
   
   return (
     <ScreenWrapper>
-      <Confetti autoplay={showConfetti} fallDuration={5} blastDuration={10} autoStartDelay={1} isInfinite={false} />
+      <Confetti autoplay={showConfetti} fallDuration={5000} blastDuration={100} autoStartDelay={1} isInfinite={false} />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ gap: 25 }}

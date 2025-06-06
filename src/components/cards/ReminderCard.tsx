@@ -134,7 +134,7 @@ export const NotificationCard = () => {
                         trackColor={{false: '#767577', true: '#81b0ff'}}
                         thumbColor={hasQuietTime ? '#f5dd4b' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
-                        style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}
+                        style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }] }}
                         onValueChange={setHasQuietTime}
                         value={hasQuietTime}
                         />
