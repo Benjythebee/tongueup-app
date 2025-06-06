@@ -38,6 +38,10 @@ export default {
                         monthly:"Monthly"
                 }
         },
+        notification:{
+            title: "Your tongue!",
+            body: "Have you been keeping your tongue on the roof of your mouth?",
+        },
         buttons:{
                 delete:"Delete",
                 confirm:"Confirm",

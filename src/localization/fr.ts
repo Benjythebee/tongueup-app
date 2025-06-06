@@ -38,6 +38,10 @@ export default {
                         monthly:"Mensuellement",
                 }
         },
+        notification:{
+            title: "Ta langue!",
+            body: "As-tu gardé ta langue sur le toit de ta bouche?",
+        },
         buttons:{
                 delete:"Supprimer",
                 confirm:"Confirmer",

@@ -14,9 +14,9 @@ import { useTranslation } from "react-i18next";
 
 const identifier = "tongueup-tongue-reminder";
 
-const notificationContent: Notifications.NotificationContentInput = {
-            title: "Remember to drink water!",
-            body: "It's time to hydrate! Remember to drink water for your health.",
+const _notificationContent: Notifications.NotificationContentInput = {
+            title: "Your tongue!",
+            body: "Have you been keeping your tongue on the roof of your mouth?",
             vibrate: [0, 250, 500, 250],
             sound: "default",
             priority: Notifications.AndroidNotificationPriority.HIGH,
@@ -51,6 +51,12 @@ export const NotificationCard = () => {
     const seconds = frequencies[key];
     // Clear any existing notifications with this identifier
     await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const notificationContent = {
+      ..._notificationContent,
+      title: t("notification.title"),
+      body: t("notification.body"),
+    }
 
     if(hasQuietTime && settings.quietTime.start !== settings.quietTime.end){
         scheduleRecurringNotificationsWithQuietTimes({
