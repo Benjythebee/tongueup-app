@@ -22,6 +22,7 @@
         {
           "icon": "./assets/favicon.png",
           "color": "#ffffff",
+          "priority": "max",
           "defaultChannel": "default",
           "enableBackgroundRemoteNotifications": false
         }
