@@ -20,6 +20,11 @@ const defaultSettings: Settings = {
   theme:'light', // Default theme
 };
 
+const oldFrequencyToNew = {
+ 9:7,
+ 8:6 
+}
+
 // Storage key
 const SETTINGS_STORAGE_KEY = '@app_tongue_patrol_settings';
 
@@ -51,6 +56,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
       
       if (storedSettings) {
         const parsedSettings = JSON.parse(storedSettings);
+        parsedSettings.frequency = (oldFrequencyToNew as any)[parsedSettings.frequency] || parsedSettings.frequency;
         setSettings({ ...defaultSettings, ...parsedSettings });
       }
     } catch (err) {

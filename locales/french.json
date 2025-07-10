@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "Pense Langue"
+  },
+  "android": {
+    "app_name": "Pense Langue",
+    "description":"Rappel-toi de la position de ta langue avec cette petite application."
+  }
+}

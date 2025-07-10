@@ -21,26 +21,6 @@ interface TimeSeriesContextType {
 // Default settings
 const defaultValues = {
   data:[],
-//   data: [{
-//     t:40482,
-//     ok:5,
-//     nok:0
-//   },
-// {
-//     t:40481,
-//     ok:2,
-//     nok:0
-//   },
-// {
-//     t:40480,
-//     ok:5,
-//     nok:2
-//   },
-// {
-//     t:40479,
-//     ok:1,
-//     nok:0
-//   }], // Default frequency value
   loading:false
 };
 
@@ -63,7 +43,7 @@ export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children 
   const _createBlankPoints = ()=>{
     const now = dateNow();
     const blankPoints: TimeSeriesDataPoint[] = [];
-    for (let i = 0; i < 4; i++) { // Create 4 half-day points
+    for (let i = 0; i < 12; i++) { // Create 12 hours points
       const halfDay = now - i;
       blankPoints.push({ t: halfDay, ok: 0, nok: 0 });
     }
@@ -71,11 +51,11 @@ export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children 
   }
 
   const dateNow = ()=>{
-    return Math.floor(Date.now() / 1000 / 60 / 60 / 12); // Convert to half-days - one X = one half-day
+    return Math.floor(Date.now() / 1000 / 60 / 60); // Convert to hours - one X = one hour
   }
 
   const pointToTimeStamp = (number: number): Date => {
-    return new Date(number * 1000 * 60 * 60 * 12); // Convert half-days back to milliseconds
+    return new Date(number * 1000 * 60 * 60); // Convert hours back to milliseconds
   }
 
   const getDataAt = (halfDay: number): TimeSeriesDataPoint | undefined => {
@@ -83,7 +63,7 @@ export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children 
   }
 
   const _addEmptyPointsBetween = (dataPoints: TimeSeriesDataPoint[]) => {
-    // Say the last point was 2 half days in the past, we need to add 2 empty points
+    // Say the last point was 2 hours in the past, we need to add 2 empty hour point
     const now = dateNow();
     const lastPoint = dataPoints[dataPoints.length - 1];
     const emptyPoints: TimeSeriesDataPoint[] = [];

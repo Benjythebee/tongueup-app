@@ -1,6 +1,6 @@
 export default {
         header:{
-                Progress:"Progrès",
+                Statistics:"Statistiques",
                 Notes:"Notes",
                 Reminders:"Rappels",
                 Settings:"Paramètres",
@@ -20,13 +20,11 @@ export default {
                         tellUsWhatQuietTime:"Dis-nous quand ne pas te déranger avec des notifications.",
                 },
                 label:{
-                        settingsLanguage:"Language",
+                        settingsLanguage:"Langage",
                         clearProgress:"Efface tes données",
                         darkTheme:"Thème sombre",
                         RemindMe:"Rappelle-moi",
                         SetQuietPeriod:"Veux-tu définir une période de silence?",
-                        every1Minutes:"Toutes les 1 minute",
-                        every2Minutes:"Toutes les 2 minutes",
                         every15Minutes:"Toutes les 15 minutes",
                         every30Minutes:"Toutes les 30 minutes",
                         everyHour:"Toutes les heures",
@@ -34,14 +32,12 @@ export default {
                         every4Hours:"Toutes les 4 heures",
                         every6Hours:"Toutes les 6 heures",
                         every12Hours:"Toutes les 12 heures",
-                        daily:"Quotidiennement",
-                        weekly:"Toute les semaines",
-                        monthly:"Mensuellement",
+                        daily:"Quotidiennement"
                 }
         },
         notification:{
             title: "Ta langue!",
-            body: "As-tu gardé ta langue sur le toit de ta bouche?",
+            body: "où est ta langue?",
         },
         buttons:{
                 delete:"Supprimer",

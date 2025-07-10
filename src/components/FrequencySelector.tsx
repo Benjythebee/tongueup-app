@@ -6,8 +6,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export const FrequencyToi18n = {
-  "Every 1 minute": "general.label.every1Minutes",
-  "Every 2 minutes": "general.label.every2Minutes",
   "Every 15 minutes": "general.label.every15Minutes",
   "Every 30 minutes": "general.label.every30Minutes",
   "Every hour": "general.label.everyHour",
@@ -15,14 +13,10 @@ export const FrequencyToi18n = {
   "Every 4 hours": "general.label.every4Hours",
   "Every 6 hours": "general.label.every6Hours",
   "Every 12 hours": "general.label.every12Hours",
-  Daily: "general.label.daily",
-  Weekly: "general.label.weekly",
-  Monthly: "general.label.monthly",
+  Daily: "general.label.daily"
 } as const
 
 export const frequencies = {
-  "Every 1 minute": 1 * 60,
-  "Every 2 minutes": 2 * 60,
   "Every 15 minutes": 15 * 60,
   "Every 30 minutes": 30 * 60,
   "Every hour": 60 * 60,
@@ -30,13 +24,11 @@ export const frequencies = {
   "Every 4 hours": 4 * 60 * 60,
   "Every 6 hours": 6 * 60 * 60,
   "Every 12 hours": 12 * 60 * 60,
-  Daily: 24 * 60 * 60,
-  Weekly: 7 * 24 * 60 * 60,
-  Monthly: 30 * 24 * 60 * 60,
+  Daily: 24 * 60 * 60
 };
 export const frequencyHoursLimits = {
-  "Every 1 minute": 37, // 37 hours
-  "Every 2 minutes": 37, // 37 hours
+  "Every 5 minute": 37, // 37 hours
+  "Every 10 minutes": 37, // 37 hours
   "Every 15 minutes": 37, // 37 hours
   "Every 30 minutes": 50, // 50 hours
   "Every hour": 100, // 100 hours
@@ -45,8 +37,6 @@ export const frequencyHoursLimits = {
   "Every 6 hours": 600, // 600 hours
   "Every 12 hours": 1200, // 1200 hours
   "Daily": 24 * 30, // 30 days (in hours)
-  "Weekly": 7 * 24 * 6, // 6 weeks (in hours)
-  "Monthly": 24 * 30 * 3, //  3 months (in hours)
 };
 
 interface FrequencySelectorProps {

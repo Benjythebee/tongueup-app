@@ -86,7 +86,7 @@ export const NotificationCard = () => {
 
   const isNotificationEnabled = settings.notificationsEnabled;
 
-  const frequencyTextKey = FrequencyToi18n[Object.keys(frequencies)[settings.frequency] as keyof typeof FrequencyToi18n] || "general.label.every1Minutes";
+  const frequencyTextKey = FrequencyToi18n[Object.keys(frequencies)[settings.frequency] as keyof typeof FrequencyToi18n] || "general.label.every5Minutes";
 
   return (
     <CardComponent
@@ -95,23 +95,25 @@ export const NotificationCard = () => {
         settings.notificationsEnabled ? (
           <View
             style={{
-              gap: 2,
-              flex: 1,
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
+              gap: 10
+              // flex: 1,
+
+              // justifyContent:'space-between',
+
             }}
           >
-            <Text style={styles.text}>
+            <Text style={[styles.text,{flexShrink: 1}]}>
               {t("general.description.notificationEnabled")}{" "}
               {t(frequencyTextKey).toLowerCase()}
             </Text>
-            <ActionButton
-              variant="small"
-              style={{ backgroundColor: colors.error }}
-              icon="x"
-              onActionPress={onDisableNotifications}
-            />
+             <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <ActionButton
+                variant="small"
+                style={{ backgroundColor: colors.error }}
+                icon="x"
+                onActionPress={onDisableNotifications}
+              />
+              </View>
           </View>
         ) : (
           <>

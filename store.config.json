@@ -1,0 +1,15 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "TongueUp",
+        "subtitle": "A linguistic help tool",
+        "description": "A simple app to remind you to position your tongue on the roof of your mouth",
+        "keywords": ["health"],
+        "supportUrl": "https://tongueup.benjylarcher.com/",
+        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy"
+      }
+    }
+  }
+}

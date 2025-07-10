@@ -1,6 +1,6 @@
 export default {
         header:{
-                Progress:"Progress",
+                Statistics:"Statistics",
                 Notes:"Notes",
                 Reminders:"Reminders",
                 Settings:"Settings",
@@ -13,7 +13,7 @@ export default {
                 RightThisInstant:"Right now, where is your tongue?",
                 MyTongueWasOnRoof:"My tongue was stuck to the roof of my mouth",
                 MyTongueWasPushingTeeth:"I don't know / my tongue was pushing my teeth",
-                ComingOutOfMeeting:"Coming out of meeting or a class and you didn't have your phone? Have you thought about the position of your tongue?",
+                ComingOutOfMeeting:"Coming out of meeting or a class and you didn't have your phone? Have you thought about the position of your tongue? If so, was your tongue in the right place?",
                 description:{
                         notificationEnabled:"A notification will be sent",
                         reminder:"We'll send you a notification to remind you about it!",
@@ -25,8 +25,6 @@ export default {
                         darkTheme:"Dark Theme",
                         RemindMe:"Remind me",
                         SetQuietPeriod:"Do you want to set a quiet period?",
-                        every1Minutes:"Every 1 minute",
-                        every2Minutes:"Every 2 minutes",
                         every15Minutes:"Every 15 minutes",
                         every30Minutes:"Every 30 minutes",
                         everyHour:"Every hour",
@@ -34,14 +32,12 @@ export default {
                         every4Hours:"Every 4 hours",
                         every6Hours:"Every 6 hours",
                         every12Hours:"Every 12 hours",
-                        daily:"Daily",
-                        weekly:"Weekly",
-                        monthly:"Monthly"
+                        daily:"Daily"
                 }
         },
         notification:{
             title: "Your tongue!",
-            body: "Have you been keeping your tongue on the roof of your mouth?",
+            body: "Where is your tongue?",
         },
         buttons:{
                 delete:"Delete",

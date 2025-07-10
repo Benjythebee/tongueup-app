@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "tongueup",
+    "name": "TongueUp",
     "slug": "tongueup",
     "version": "1.0.0",
     "jsEngine": "hermes",
@@ -27,25 +27,52 @@
         }
       ],
       "expo-secure-store",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true
+          }
+        }
+      ]
     ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#afffaf"
+      "backgroundColor": "#c598d6"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "jsEngine":"hermes",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "blockedPermissions": [
+        "android.permission.READ_PHONE_STATE"
+      ],
       "edgeToEdgeEnabled": true,
+      "versionCode": 13,
       "googleServicesFile": "./google-services.json",
       "package": "com.jybenlarcher.tongueup"
+    },
+    "locales": {
+      "en": {
+        "name": "TongueUp",
+        "description": "A simple app to remind you to position your tongue on the roof of your mouth.",
+        "shortName": "TongueUp",
+        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
+        "supportUrl": "https://tongueup.benjylarcher.com/support"
+      },
+      "fr": {
+        "name": "Pense Langue",
+        "description": "Pense Langue est une application simple pour vous rappeler de positionner votre langue sur le toit de votre bouche.",
+        "shortName": "PenseLangue",
+        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
+        "supportUrl": "https://tongueup.benjylarcher.com/support"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
