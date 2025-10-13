@@ -17,8 +17,11 @@ import SettingsScreen from './screens/SettingsScreen';
 import Icon from '@react-native-vector-icons/lucide';
 import './localization';
 import { useTranslation } from 'react-i18next';
+import { setupTaskManager } from './background_task';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+
+setupTaskManager();
 
 const App: React.FC = () => {
   usePushNotifications();

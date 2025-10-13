@@ -24,10 +24,6 @@ export const usePushNotifications = (): PushNotificationState => {
     Notifications.ExpoPushToken | undefined
   >();
 
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >();
-
 //   const notificationListener = useRef<Notifications.EventSubscription>(null!);
 //   const responseListener = useRef<Notifications.EventSubscription>(null!);
 
@@ -57,7 +53,7 @@ export const usePushNotifications = (): PushNotificationState => {
         name: "default",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 500, 250],
-        lightColor: "#FF231F7C",
+        lightColor: "#6787c4e7",
       });
     }
 
@@ -88,6 +84,5 @@ export const usePushNotifications = (): PushNotificationState => {
 
   return {
     expoPushToken,
-    notification,
   };
 };

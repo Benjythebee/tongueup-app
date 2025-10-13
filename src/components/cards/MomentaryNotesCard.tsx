@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 export const TIME_NO_RECORD = 30 * 1000; // 30 seconds
 
-export const MomentaryNotesCard: React.FC<{showConfetti:()=>void}> = ({showConfetti}) => {
+export const MomentaryNotesCard: React.FC<{}> = ({}) => {
     const { colors } = useTheme();
     const [lastEntryRecord,setRecord,refreshValue] = useAsyncStorage("lastEntryRecord",{date:Date.now()-TIME_NO_RECORD});
     const { refreshData, addPoint } = useSavedTimeseries();
@@ -18,7 +18,6 @@ export const MomentaryNotesCard: React.FC<{showConfetti:()=>void}> = ({showConfe
     const { t } = useTranslation(); 
 
     const onAddThought = async (str: "ok" | "notok") => {
-        str=='ok' && showConfetti()
         await addPoint(str == "ok" ? 1 : 0, str == "notok" ? 1 : 0);
         setTimeout(() => {
           refreshValue();

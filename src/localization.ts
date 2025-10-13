@@ -22,7 +22,7 @@ i18n
   .init({
     // the translations
     resources: resources,
-    lng: getLocales()[0].languageCode||undefined, // if you're using a language detector, do not define the lng option
+    lng: getLocales()[0].languageCode||'en', // if you're using a language detector, do not define the lng option
     fallbackLng: "en",
     interpolation: {
       escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape

@@ -1,26 +1,15 @@
 import { StyleSheet, Switch, Text, View } from "react-native";
 import CardComponent from "../Card";
-import FrequencySelector, { frequencies, frequencyHoursLimits, FrequencyToi18n } from "../FrequencySelector";
+import FrequencySelector, { frequencies, FrequencyToi18n } from "../FrequencySelector";
 import TimeSelector from "../TimeSelector";
 import Icon from "@react-native-vector-icons/lucide";
 import { useSettings } from "../../context/SettingsContext";
 import { useTheme } from "../../context/ThemeContext";
 import Button from "../Button";
-import * as Notifications from "expo-notifications";
 import { useMemo, useState } from "react";
-import { scheduleRecurringNotificationsWithQuietTimes } from "../../utils/notificationScheduler";
 import ActionButton from "../ActionButton";
 import { useTranslation } from "react-i18next";
-
-const identifier = "tongueup-tongue-reminder";
-
-const _notificationContent: Notifications.NotificationContentInput = {
-            title: "Your tongue!",
-            body: "Have you been keeping your tongue on the roof of your mouth?",
-            vibrate: [0, 250, 500, 250],
-            sound: "default",
-            priority: Notifications.AndroidNotificationPriority.HIGH,
-        }
+import { registerBackgroundTaskAsync, unregisterBackgroundTaskAsync } from "../../utils/registerBackgroundNotification";
 
 export const NotificationCard = () => {
   const { colors } = useTheme();
@@ -32,8 +21,7 @@ export const NotificationCard = () => {
 
   const onDisableNotifications = async () => {
     // Remove notification if disabled
-    
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    await unregisterBackgroundTaskAsync()
     updateSetting("notificationsEnabled", false);
   };
 
@@ -50,36 +38,38 @@ export const NotificationCard = () => {
     ] as keyof typeof frequencies;
     const seconds = frequencies[key];
     // Clear any existing notifications with this identifier
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    // await Notifications.cancelAllScheduledNotificationsAsync();
 
-    const notificationContent = {
-      ..._notificationContent,
-      title: t("notification.title"),
-      body: t("notification.body"),
-    }
+    // const notificationContent = {
+    //   ..._notificationContent,
+    //   title: t("notification.title"),
+    //   body: t("notification.body"),
+    // }
 
-    if(hasQuietTime && settings.quietTime.start !== settings.quietTime.end){
-        scheduleRecurringNotificationsWithQuietTimes({
-        identifier,
-        quietTimes: {
-            start: settings.quietTime.start,
-            end: settings.quietTime.end,
-        },
-        content:notificationContent,
-        intervalMinutes: seconds / 60,
-        durationHours: frequencyHoursLimits[key], // Default to 37 hours
-        });
-    }else{
-        await Notifications.scheduleNotificationAsync({
-            identifier,
-            content: notificationContent,
-            trigger: {
-                type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-                seconds: seconds,
-                repeats: true,
-            },
-            });
-    }
+    // if(hasQuietTime && settings.quietTime.start !== settings.quietTime.end){
+    //     scheduleRecurringNotificationsWithQuietTimes({
+    //     identifier,
+    //     quietTimes: {
+    //         start: settings.quietTime.start,
+    //         end: settings.quietTime.end,
+    //     },
+    //     content:notificationContent,
+    //     intervalMinutes: seconds / 60,
+    //     durationHours: frequencyHoursLimits[key], // Default to 37 hours
+    //     });
+    // }else{
+    //     await Notifications.scheduleNotificationAsync({
+    //         identifier,
+    //         content: notificationContent,
+    //         trigger: {
+    //             type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+    //             seconds: seconds,
+    //             repeats: true,
+    //         },
+    //         });
+    // }
+
+    await registerBackgroundTaskAsync()
 
     updateSetting("notificationsEnabled", true);
   };

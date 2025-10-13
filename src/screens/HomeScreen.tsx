@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { useTheme } from "../context/ThemeContext";
-import {Confetti} from "react-native-fast-confetti"
 import { ProgressCard } from "../components/cards/ProgressCard";
 import { MomentaryNotesCard } from "../components/cards/MomentaryNotesCard";
 import { PeriodicThoughtsCard } from "../components/cards/PeriodicThoughtsCard";
@@ -10,12 +9,10 @@ import { ScreenWrapper } from "../components/ScreenWrapper";
 
 const HomeScreen: React.FC = () => {
   const { colors } = useTheme();
-  const [showConfetti,setShowConfetti] = useState<boolean>(false); // Placeholder for any state you might need
   const styles = useMemo(() => createStyles(colors), [colors]);
   
   return (
     <ScreenWrapper>
-      <Confetti autoplay={showConfetti} fallDuration={5000} blastDuration={100} autoStartDelay={1} isInfinite={false} />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ gap: 25 }}
@@ -24,10 +21,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.header}>
           <Text style={styles.title}>Notes</Text>
         </View>
-        <MomentaryNotesCard showConfetti={()=>{
-          setShowConfetti(true)
-          setTimeout(() => {setShowConfetti(false)},5000)
-        }} />
+        <MomentaryNotesCard />
 
         <PeriodicThoughtsCard />
 

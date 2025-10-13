@@ -24,11 +24,18 @@
           "color": "#ffffff",
           "priority": "max",
           "defaultChannel": "default",
+          "enableBackgroundNotification": true,
+          "useNextNotificationsApi": true,
           "enableBackgroundRemoteNotifications": false
         }
       ],
       "expo-secure-store",
-      "expo-localization",
+      ["expo-localization",{
+        "supportedLocales": {
+            "ios": ["en", "fr"],
+            "android": ["en", "fr"]
+          }
+      }],
       [
         "expo-build-properties",
         {
@@ -36,7 +43,9 @@
             "enableProguardInReleaseBuilds": true
           }
         }
-      ]
+      ],
+      "expo-background-task",
+      // "react-native-worklets/plugin"
     ],
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -44,7 +53,10 @@
       "backgroundColor": "#c598d6"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -60,20 +72,8 @@
       "package": "com.jybenlarcher.tongueup"
     },
     "locales": {
-      "en": {
-        "name": "TongueUp",
-        "description": "A simple app to remind you to position your tongue on the roof of your mouth.",
-        "shortName": "TongueUp",
-        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
-        "supportUrl": "https://tongueup.benjylarcher.com/support"
-      },
-      "fr": {
-        "name": "Pense Langue",
-        "description": "Pense Langue est une application simple pour vous rappeler de positionner votre langue sur le toit de votre bouche.",
-        "shortName": "PenseLangue",
-        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
-        "supportUrl": "https://tongueup.benjylarcher.com/support"
-      }
+      "en": "./locales/en.json",
+      "fr": "./locales/fr.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -82,6 +82,9 @@
       "eas": {
         "projectId": "66a067f9-de91-46db-8307-39db8402567a"
       }
+    },
+    "experiments": {
+      "reactCanary": true
     },
     "owner": "benjythebee"
   }

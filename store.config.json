@@ -6,7 +6,15 @@
         "title": "TongueUp",
         "subtitle": "A linguistic help tool",
         "description": "A simple app to remind you to position your tongue on the roof of your mouth",
-        "keywords": ["health"],
+        "keywords": ["health","tongue","reminder"],
+        "supportUrl": "https://tongueup.benjylarcher.com/",
+        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy"
+      },
+      "fr-FR": {
+        "title": "Pense Langue",
+        "subtitle": "Un outil d'aide linguistique",
+        "description": "Une application simple pour vous rappeler de positionner votre langue sur le toit de votre bouche",
+        "keywords": ["santé","langue","rappel"],
         "supportUrl": "https://tongueup.benjylarcher.com/",
         "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy"
       }

@@ -16,6 +16,9 @@ export const FrequencyToi18n = {
   Daily: "general.label.daily"
 } as const
 
+/**
+ * Frequencies in seconds
+ */
 export const frequencies = {
   "Every 15 minutes": 15 * 60,
   "Every 30 minutes": 30 * 60,
@@ -27,8 +30,6 @@ export const frequencies = {
   Daily: 24 * 60 * 60
 };
 export const frequencyHoursLimits = {
-  "Every 5 minute": 37, // 37 hours
-  "Every 10 minutes": 37, // 37 hours
   "Every 15 minutes": 37, // 37 hours
   "Every 30 minutes": 50, // 50 hours
   "Every hour": 100, // 100 hours
