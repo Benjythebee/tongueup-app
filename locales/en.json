@@ -1,7 +1,9 @@
 {
-    "name": "TongueUp",
-    "description": "TongueUp is a language learning app that helps you practice speaking and listening skills through interactive exercises and real-world conversations.",
-    "shortName": "TongueUp",
-    "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
-    "supportUrl": "https://tongueup.benjylarcher.com/support"
+   "ios": { 
+        "name": "TongueUp",
+        "description": "TongueUp is a language learning app that helps you practice speaking and listening skills through interactive exercises and real-world conversations.",
+        "shortName": "TongueUp",
+        "privacyPolicyUrl": "https://tongueup.benjylarcher.com/privacy",
+        "supportUrl": "https://tongueup.benjylarcher.com/support"
+    }
 }
