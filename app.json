@@ -7,7 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "plugins": [
       [
         "expo-font",
@@ -66,7 +65,6 @@
       "blockedPermissions": [
         "android.permission.READ_PHONE_STATE"
       ],
-      "edgeToEdgeEnabled": true,
       "versionCode": 13,
       "googleServicesFile": "./google-services.json",
       "package": "com.jybenlarcher.tongueup"
