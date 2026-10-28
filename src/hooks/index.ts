@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, ScaledSize } from 'react-native';
 
 // Hook for managing debounced values
 export const useDebounce = <T>(value: T, delay: number): T => {
@@ -23,7 +23,7 @@ export const useScreenDimensions = () => {
   const [dimensions, setDimensions] = useState(() => Dimensions.get('window'));
 
   useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+    const subscription = Dimensions.addEventListener('change', ({ window }: { window: ScaledSize }) => {
       setDimensions(window);
     });
 

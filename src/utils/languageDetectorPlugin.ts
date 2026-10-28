@@ -19,7 +19,7 @@ const languageDetectorPlugin:Module = {
           return callback(language);
         } else {
           //if language was not stored yet, use device's locale
-          return callback(Localization.locale);
+          return callback(Localization.getLocales()[0]?.languageCode ?? "en");
         }
       });
     } catch (error) {

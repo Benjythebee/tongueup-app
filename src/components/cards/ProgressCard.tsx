@@ -3,10 +3,20 @@ import { LayoutChangeEvent, View } from "react-native"
 import CardComponent from "../Card"
 import { CurveType, LineChart } from "react-native-gifted-charts"
 import LoadingSpinner from "../LoadingSpinner"
-import {Dimensions} from 'react-native';
+import {Dimensions, StatusBar} from 'react-native';
 import { useTranslation } from "react-i18next"
-import { fontSize, width } from "react-native-responsive-sizes";
 import { useEffect, useRef, useState } from "react"
+
+// Scales a font size with the screen height (same formula react-native-responsive-sizes used on Android)
+const fontSize = (size: number) => {
+    const { width, height } = Dimensions.get('screen');
+    const deviceHeight = width > height ? width : height - (StatusBar.currentHeight ?? 0);
+    return Math.round((size * deviceHeight) / 680);
+}
+
+// react-native-svg draws the whole (scrollable) chart into one bitmap on Android,
+// so plotting every hour since install runs out of memory: only plot the most recent hours
+const CHART_HOURS = 48;
 
 export const ProgressCard = () => {
     const { t, i18n} = useTranslation();
@@ -14,7 +24,8 @@ export const ProgressCard = () => {
     
     const [width, setWidth] = useState<number>(windowWidth);
     const ref = useRef<any>(null);
-    const {data,loading,pointToTimeStamp} = useSavedTimeseries()
+    const {data:allData,loading,pointToTimeStamp} = useSavedTimeseries()
+    const data = allData.slice(-CHART_HOURS);
 
     const dateToLabel = (date: Date) => {
         // Transform date to a label "[day of the week], [day of the month] [month name]"

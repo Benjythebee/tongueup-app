@@ -1,5 +1,5 @@
-import { BorderlessButton, Pressable } from "react-native-gesture-handler"
-import {Text, StyleSheet, ViewStyle, StyleProp} from "react-native";
+import { Touchable } from "react-native-gesture-handler"
+import {Text, StyleSheet, ViewStyle, StyleProp, Platform} from "react-native";
 
 interface ButtonProps {
     onPress?: () => void;
@@ -10,8 +10,13 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ onPress,label, style, textStyle }) => {
 
-    return (<BorderlessButton 
+    // Same feedback as the former BorderlessButton: borderless ripple on Android, opacity on iOS
+    return (<Touchable
             style={[defaultStyle.confirmButton, style]}
+            {...Platform.select({
+                android: { androidRipple: { borderless: true } },
+                default: { activeOpacity: 0.3, animationDuration: 0 },
+            })}
             onPress={() => {
                 onPress && onPress();
             }}
@@ -19,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({ onPress,label, style, textStyle }) => {
                 <Text style={[defaultStyle.textStyle,textStyle]}>
                 {label || 'Button'}
                 </Text>
-            </BorderlessButton>)
+            </Touchable>)
 }
 
 

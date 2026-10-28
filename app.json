@@ -3,7 +3,6 @@
     "name": "TongueUp",
     "slug": "tongueup",
     "version": "1.0.0",
-    "jsEngine": "hermes",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -28,29 +27,41 @@
           "enableBackgroundRemoteNotifications": false
         }
       ],
-      "expo-secure-store",
-      ["expo-localization",{
-        "supportedLocales": {
-            "ios": ["en", "fr"],
-            "android": ["en", "fr"]
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "en",
+              "fr"
+            ],
+            "android": [
+              "en",
+              "fr"
+            ]
           }
-      }],
+        }
+      ],
       [
         "expo-build-properties",
         {
           "android": {
-            "enableProguardInReleaseBuilds": true
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "# WorkManager (expo-background-task) instantiates its Room database by reflection; R8 full mode strips the constructor otherwise\n-keep class * extends androidx.room.RoomDatabase { <init>(); }"
           }
         }
       ],
       "expo-background-task",
-      // "react-native-worklets/plugin"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "imageWidth": 200,
+          "backgroundColor": "#c598d6"
+        }
+      ]
     ],
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#c598d6"
-    },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {

@@ -1,7 +1,7 @@
 
 import { LinearGradient } from 'expo-linear-gradient';
 import { PropsWithChildren, useMemo } from 'react';
-import {Dimensions, SafeAreaView, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,7 +12,7 @@ export const ScreenWrapper: React.FC<PropsWithChildren> = ({ children }) => {
 
   const style = useMemo(() => createStyles(colors), [colors]);
     return (
-    <SafeAreaView style={style.container}>
+    <View style={style.container}>
       <LinearGradient
         colors={["rgba(255, 193, 247, 0.8)", "transparent"]}
         style={[style.background,{height:height-insets.bottom+20}]}
@@ -21,7 +21,7 @@ export const ScreenWrapper: React.FC<PropsWithChildren> = ({ children }) => {
       >
         {children}
     </LinearGradient>
-</SafeAreaView>
+</View>
     )
 }
 

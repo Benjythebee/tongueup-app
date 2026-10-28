@@ -7,6 +7,7 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  ScrollViewInstance,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeColors } from '../types/common';
@@ -33,7 +34,7 @@ const RollPicker: React.FC<RollPickerProps> = ({
   textStyle,
   selectedTextStyle,
 }) => {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollViewInstance>(null);
   const {colors} = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(initialSelectedIndex);
   const scrollY = useRef(new Animated.Value(0)).current;
