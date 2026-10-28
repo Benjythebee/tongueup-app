@@ -1,42 +1,14 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { Theme, ThemeColors } from '../types/common';
 import { useSettings } from './SettingsContext';
+import { darkColors, lightColors } from '../theme/tokens';
 
 interface ThemeContextType {
   theme: Theme;
+  isDark: boolean;
   colors: ThemeColors;
   toggleTheme: () => void;
 }
-
-const lightColors: ThemeColors = {
-  primary: '#007AFF',
-  secondary: '#5856D6',
-  background: '#FFFFFF',
-  cardBackground: '#FFFFFF',
-  surface: '#F2F2F7',
-  text: '#000000',
-  textSecondary: '#8E8E93',
-  textRollPicker: '#333',
-  border: '#E5E5EA',
-  success: '#34C759',
-  warning: '#FF9500',
-  error: '#FF3B30',
-};
-
-const darkColors: ThemeColors = {
-  primary: '#0A84FF',
-  secondary: '#5E5CE6',
-  background: '#000000',
-  cardBackground: '#1f1f1f',
-  surface: '#1C1C1E',
-  text: '#FFFFFF',
-  textSecondary: '#8E8E93',
-  textRollPicker: '#ffffff',
-  border: '#38383A',
-  success: '#30D158',
-  warning: '#FF9F0A',
-  error: '#FF453A',
-};
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
@@ -45,19 +17,18 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const {settings,updateSetting} = useSettings()
-  const [theme, setTheme] = useState<Theme>(settings.theme);
+  const { settings, updateSetting } = useSettings();
+  // Derived from settings so the saved theme applies once settings finish loading
+  const theme = settings.theme;
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = () => {
     updateSetting('theme', theme === 'light' ? 'dark' : 'light');
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  }, []);
-
-  const colors = theme === 'light' ? lightColors : darkColors;
+  };
 
   const value: ThemeContextType = {
     theme,
-    colors,
+    isDark: theme === 'dark',
+    colors: theme === 'dark' ? darkColors : lightColors,
     toggleTheme,
   };
 

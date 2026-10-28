@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, Theme as NavigationTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
-import ExploreScreen from './screens/ReminderScreen';
+import ReminderScreen from './screens/ReminderScreen';
 import { RootTabParamList } from './types/navigation';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { Insets, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SettingsProvider } from './context/SettingsContext';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { SavedDataProvider } from './context/TimeSeriesData';
@@ -18,6 +17,7 @@ import Icon from '@react-native-vector-icons/lucide';
 import './localization';
 import { useTranslation } from 'react-i18next';
 import { setupTaskManager } from './background_task';
+import { IconName } from './types/common';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -32,7 +32,6 @@ const App: React.FC = () => {
           <ThemeProvider>
             <SavedDataProvider>
                 <Navigation />
-                <StatusBar style="auto" />
             </SavedDataProvider>
           </ThemeProvider>
         </SettingsProvider>
@@ -41,33 +40,49 @@ const App: React.FC = () => {
   );
 };
 
-// Simple icon components (you can replace with your preferred icon library)
-const HomeIcon: React.FC<{ color: string; size: number }> = ({ color, size }) => (
-  <Icon name="text" size={size} color={color} />
+const tabIcon = (name: IconName) => ({ color, size }: { color: string; size: number }) => (
+  <Icon name={name} size={size - 2} color={color} />
 );
 
-const ReminderIcon: React.FC<{ color: string; size: number }> = ({ color, size }) => (
-  <Icon name="clock" size={size} color={color} />
-);
-
-const SettingsIcon: React.FC<{ color: string; size: number }> = ({ color, size }) => (
-  <Icon name="cog" size={size} color={color} />
-);
 export default App;
 
 const Navigation = ()=>{
-  const insets = useSafeAreaInsets();
-  const {colors} = useTheme();
+  const {colors, isDark} = useTheme();
   const {t} = useTranslation();
-  const styles = useMemo(() => createStyles(colors,insets), [colors,insets]);
 
-  return (<NavigationContainer>
+  // Keeps navigator backgrounds in sync with the app theme (no white flash between tabs in dark mode)
+  const navigationTheme = useMemo<NavigationTheme>(() => {
+    const base = isDark ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: colors.primary,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.text,
+        border: colors.border,
+      },
+    };
+  }, [colors, isDark]);
+
+  return (<NavigationContainer theme={navigationTheme}>
+              <StatusBar style={isDark ? 'light' : 'dark'} />
               <Tab.Navigator
                 screenOptions={{
-                  tabBarActiveTintColor: '#007AFF',
-                  tabBarInactiveTintColor: '#8E8E93',
+                  tabBarActiveTintColor: colors.primary,
+                  tabBarInactiveTintColor: colors.textMuted,
                   headerShown: false,
-                  tabBarStyle: styles.tabBar,
+                  tabBarStyle: {
+                    backgroundColor: colors.surface,
+                    borderTopColor: colors.border,
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    elevation: 0,
+                  },
+                  tabBarLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: '600',
+                  },
                 }}
               >
                 <Tab.Screen
@@ -75,19 +90,15 @@ const Navigation = ()=>{
                   component={HomeScreen}
                   options={{
                     tabBarLabel: t("header.Notes"),
-                    tabBarIcon: ({ color, size }) => (
-                      <HomeIcon color={color} size={size} />
-                    ),
+                    tabBarIcon: tabIcon("notebook-pen"),
                   }}
                 />
                 <Tab.Screen
                   name="Reminder"
-                  component={ExploreScreen}
+                  component={ReminderScreen}
                   options={{
                     tabBarLabel: t("header.Reminders"),
-                    tabBarIcon: ({ color, size }) => (
-                      <ReminderIcon color={color} size={size} />
-                    ),
+                    tabBarIcon: tabIcon("bell"),
                   }}
                 />
                 <Tab.Screen
@@ -95,24 +106,9 @@ const Navigation = ()=>{
                   component={SettingsScreen}
                   options={{
                     tabBarLabel: t('header.Settings'),
-                    tabBarIcon: ({ color, size }) => (
-                      <SettingsIcon color={color} size={size} />
-                    ),
+                    tabBarIcon: tabIcon("settings"),
                   }}
                 />
               </Tab.Navigator>
             </NavigationContainer>)
 }
-
-const createStyles = (colors: any,insets:Insets) =>StyleSheet.create({
-  tabBar:{
-    paddingBottom:insets.bottom,
-    backgroundColor: colors.background,
-  },
-  tab:{
-    backgroundColor: colors.background,
-  },
-  tabText:{
-    color: colors.text,
-  }
-})

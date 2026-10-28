@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeColors } from '../types/common';
+import { radius, typography } from '../theme/tokens';
 
 
 interface RollPickerProps {
@@ -120,7 +121,7 @@ const RollPicker: React.FC<RollPickerProps> = ({
           style={[
             styles.itemText,
             textStyle,
-            selectedIndex === index && selectedTextStyle,
+            selectedIndex === index && [styles.selectedItemText, selectedTextStyle],
           ]}
         >
           {item}
@@ -131,7 +132,7 @@ const RollPicker: React.FC<RollPickerProps> = ({
 
   return (
     <View style={[styles.container, { height: containerHeight }, style]}>
-      {/* Selection indicator overlay */}
+      {/* Selection highlight, drawn under the transparent ScrollView */}
       <View
         style={[
           styles.selectionIndicator,
@@ -179,19 +180,20 @@ const createStyles =(colors:ThemeColors)=> StyleSheet.create({
     alignItems: 'center',
   },
   itemText: {
-    fontSize: 18,
-    color: colors.textRollPicker,
+    ...typography.body,
+    color: colors.textSecondary,
     textAlign: 'center',
+  },
+  selectedItemText: {
+    ...typography.headline,
+    color: colors.primary,
   },
   selectionIndicator: {
     position: 'absolute',
     left: 0,
     right: 0,
-    // backgroundColor: 'rgba(0, 123, 255, 0.1)',
-    // borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    // borderColor: 'rgba(0, 123, 255, 0.3)',
-    zIndex: 1,
+    backgroundColor: colors.primarySoft,
+    borderRadius: radius.md,
     pointerEvents: 'none',
   },
 });

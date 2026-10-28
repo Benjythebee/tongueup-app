@@ -1,8 +1,5 @@
 
-import { View, Text, StyleSheet} from "react-native";
 import RollPicker from "./RollPicker";
-import { useTheme } from "../context/ThemeContext";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export const FrequencyToi18n = {
@@ -48,81 +45,22 @@ interface FrequencySelectorProps {
 const FrequencySelector: React.FC<FrequencySelectorProps> = (props) => {
   const { defaultValue, onChange } = props;
   const {t} = useTranslation();
-  const {colors} = useTheme();
-
-  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const data = Object.keys(frequencies).map((key) => {
     return t(FrequencyToi18n[key as keyof typeof FrequencyToi18n])
   })
 
   return (
-    <View style={styles.container}>
-
-       <View style={{gap:2, flex:1, flexDirection:'row', alignContent:'center', alignItems:'center'}}>
-          <Text style={styles.text} >{t("general.label.RemindMe")}:</Text> 
-          <RollPicker
-            data={data}
-            onSelectionChange={(_, index) => {
-              onChange && onChange(index);
-            }}
-            initialSelectedIndex={defaultValue ?? 0}
-            itemHeight={30}
-            visibleItems={5}
-            style={styles.picker}
-            // textStyle={styles.pickerText}
-            selectedTextStyle={styles.selectedPickerText}
-          />
-       </View>
-    </View>
+    <RollPicker
+      data={data}
+      onSelectionChange={(_, index) => {
+        onChange && onChange(index);
+      }}
+      initialSelectedIndex={defaultValue ?? 0}
+      itemHeight={40}
+      visibleItems={3}
+    />
   );
 };
-
-const createStyles =(colors:any)=> StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-      text: {
-      color: colors.text,
-      fontSize: 18,
-    },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-  },
-  selectedText: {
-    fontSize: 18,
-    marginBottom: 30,
-    color: '#666',
-  },
-  picker: {
-    // backgroundColor: 'white',
-    borderRadius: 10,
-    width: 200,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 1,
-  },
-  pickerText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  selectedPickerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-});
 
 export default FrequencySelector;

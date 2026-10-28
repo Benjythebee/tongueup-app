@@ -1,116 +1,79 @@
-import React, { useMemo } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
+import { Alert, Linking } from "react-native";
+import Constants from "expo-constants";
 import { useTheme } from "../context/ThemeContext";
-
-
-import { Switch } from "react-native-gesture-handler";
-import Icon from "@react-native-vector-icons/lucide";
 import Button from "../components/Button";
+import CardComponent from "../components/Card";
+import ListRow, { Divider } from "../components/ListRow";
+import Toggle from "../components/Toggle";
+import AppText from "../components/AppText";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { useSavedTimeseries } from "../context/TimeSeriesData";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../components/LanguageSelector";
 
+const SUPPORT_URL = "https://tongueup.benjylarcher.com/";
+
 const SettingsScreen: React.FC = () => {
-  const { colors,theme,toggleTheme } = useTheme();
-  const { clearAllData , refreshData} = useSavedTimeseries();
-  const styles = useMemo(() => createStyles(colors), [colors]);
-  const {t} = useTranslation();
+  const { isDark, toggleTheme } = useTheme();
+  const { clearAllData, refreshData } = useSavedTimeseries();
+  const { t } = useTranslation();
 
-  const isDark = theme === "dark"
+  const onClearData = () => {
+    Alert.alert(t("settings.confirmClearTitle"), t("settings.confirmClearMessage"), [
+      { text: t("buttons.cancel"), style: "cancel" },
+      {
+        text: t("buttons.delete"),
+        style: "destructive",
+        onPress: async () => {
+          await clearAllData();
+          refreshData();
+          Alert.alert(t("settings.dataCleared"), t("settings.dataClearedMessage"));
+        },
+      },
+    ]);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('header.Settings')}</Text>
-      </View>
-      <ScrollView
-        style={{ flex: 1, gap: 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.settingContainer}>
-          <View style={{flexDirection: 'row', gap:5, alignItems: 'center'}}>
-            <Icon name="moon" size={24} color={colors.text} />
-            <Text style={styles.settingLabel}>{t("general.label.darkTheme")}</Text>
-          </View>
-          <Switch
-            value={isDark}
-            onValueChange={toggleTheme}
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isDark ? "#f4f3f4" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            style={{ marginVertical: 10, transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }]  }}
-              />
-        </View>
-        <View style={styles.settingContainer}>
-          <View style={{flexDirection: 'row', gap:5, alignItems: 'center'}}>
-            <Icon name="octagon-alert" size={24} color={colors.text} />
-            <Text style={styles.settingLabel}>{t("general.label.clearProgress")}</Text>
-          </View>
-          <Button 
-          label={t("buttons.delete")}
-          style={{backgroundColor:colors.error}}
-          onPress={async ()=>{
-            await clearAllData();
-            refreshData()
-            Alert.alert("Data cleared", "All your saved progress has been cleared.");
-          }}
-          />
+    <ScreenWrapper title={t("header.Settings")}>
+      <CardComponent title={t("settings.preferences")}>
+        <ListRow
+          icon={isDark ? "moon" : "sun"}
+          title={t("general.label.darkTheme")}
+          right={<Toggle value={isDark} onValueChange={toggleTheme} accessibilityLabel={t("general.label.darkTheme")} />}
+        />
+        <Divider />
+        <ListRow
+          icon="languages"
+          title={t("general.label.settingsLanguage")}
+          right={<LanguageSelector />}
+        />
+      </CardComponent>
 
-        </View>
+      <CardComponent title={t("settings.yourData")}>
+        <ListRow
+          icon="trash-2"
+          iconTone="error"
+          title={t("general.label.clearProgress")}
+          description={t("settings.clearProgressDescription")}
+        />
+        <Button variant="danger" fullWidth label={t("buttons.delete")} onPress={onClearData} />
+      </CardComponent>
 
-        <View style={styles.settingContainer}>
-          <View style={{flexDirection: 'row', gap:5, alignItems: 'center'}}>
-            <Icon name="languages" size={24} color={colors.text} />
-            <Text style={styles.settingLabel}>{t("general.label.settingsLanguage")}</Text>
-          </View>
-          <LanguageSelector />
+      <CardComponent title={t("settings.about")}>
+        <ListRow
+          icon="life-buoy"
+          iconTone="primary"
+          title={t("settings.help")}
+          onPress={() => Linking.openURL(SUPPORT_URL)}
+        />
+      </CardComponent>
 
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <AppText variant="caption" tone="muted" align="center">
+        {t("settings.version", { version: Constants.expoConfig?.version ?? "" })}
+      </AppText>
+    </ScreenWrapper>
   );
 };
-
-const createStyles = (colors: any) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    header: {
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      paddingTop: 40,
-      // borderBottomWidth: 1,
-      // borderBottomColor: colors.border,
-    },
-    title: {
-      fontSize: 42,
-      fontWeight: "700",
-      color: colors.text,
-      marginBottom: 4,
-    },
-    settingContainer:{
-      paddingHorizontal: 40,
-      paddingVertical: 12,
-      backgroundColor: colors.card,
-      borderRadius: 8,
-      marginBottom: 10,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    settingLabel:{
-      fontSize: 24,
-      color: colors.text,
-    }
-  });
 
 export default SettingsScreen;

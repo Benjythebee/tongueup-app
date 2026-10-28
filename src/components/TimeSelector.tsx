@@ -1,5 +1,5 @@
 
-import { View, StyleSheet} from "react-native";
+import { StyleSheet } from "react-native";
 import RollPicker from "./RollPicker";
 import { useTranslation } from "react-i18next";
 
@@ -30,7 +30,7 @@ const times = [
     '11pm'
 ] as const
 
-const timeNumberToString = (num: number): typeof times[number] => {
+export const timeNumberToString = (num: number): typeof times[number] => {
     const hours = num % 12 || 12; // Convert 0 to 12 for 12 AM
     const period = num < 12 ? 'am' : 'pm';
     return `${hours}${period}` as typeof times[number];
@@ -55,60 +55,29 @@ interface TimeSelectorProps {
 
 const TimeSelector: React.FC<TimeSelectorProps> = (props:TimeSelectorProps) => {
   const {defaultValue,onTimeChange} = props
-  const time = timeNumberToString(defaultValue|| 12);
+  const time = timeNumberToString(defaultValue ?? 12);
   const {t} = useTranslation();
   const defaultVal = times.indexOf(time);
 
   const i18Times = times.map((time) => t(`time.${time}`));
 
   return (
-    <View style={styles.container}>
-        <RollPicker
-        data={i18Times as any}
-        onSelectionChange={(item, index) => {
-          onTimeChange && onTimeChange(index);
-        }}
-        initialSelectedIndex={defaultVal}
-        itemHeight={35}
-        visibleItems={5}
-        style={styles.picker}
-        textStyle={styles.pickerText}
-        selectedTextStyle={styles.selectedPickerText}
-        />
-    </View>
+    <RollPicker
+      data={i18Times}
+      onSelectionChange={(item, index) => {
+        onTimeChange && onTimeChange(index);
+      }}
+      initialSelectedIndex={defaultVal}
+      itemHeight={38}
+      visibleItems={3}
+      style={styles.picker}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: '#f5f5f5',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 0,
-  },
   picker: {
-    // backgroundColor: 'white',
-    // borderRadius: 10,
-    width: 60,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 1,
-  },
-  pickerText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  selectedPickerText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    alignSelf: 'stretch',
   },
 });
 

@@ -1,3 +1,6 @@
+import type { ComponentProps } from 'react';
+import type Icon from '@react-native-vector-icons/lucide';
+
 export interface Card {
   id: string;
   title: string;
@@ -24,17 +27,25 @@ export interface AppState {
 
 export type Theme = 'light' | 'dark';
 
+export type IconName = ComponentProps<typeof Icon>['name'];
+
 export interface ThemeColors {
   primary: string;
-  secondary: string;
+  primarySoft: string;
+  onPrimary: string;
   background: string;
-  cardBackground: string;
   surface: string;
+  surfaceMuted: string;
   text: string;
   textSecondary: string;
-  textRollPicker: string;
+  textMuted: string;
   border: string;
+  trackOff: string;
   success: string;
-  warning: string;
+  successSoft: string;
   error: string;
+  errorSoft: string;
+  warning: string;
+  gradientTop: string;
+  shadow: string;
 }

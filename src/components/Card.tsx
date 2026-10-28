@@ -1,93 +1,81 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Pressable,
-  Dimensions,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import React, { ReactNode, useMemo } from 'react';
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 import { useTheme } from '../context/ThemeContext';
+import { elevation, radius, spacing, Tone } from '../theme/tokens';
+import { IconName, ThemeColors } from '../types/common';
+import AppText from './AppText';
+import IconBadge from './IconBadge';
 
 interface CardProps {
-  title:string,
-  style?: object;
-  contentContainerStyle?: StyleProp<ViewStyle>
-;
+  title?: string;
+  subtitle?: string;
+  icon?: IconName;
+  iconTone?: Tone;
+  /** Rendered at the end of the header row (e.g. a toggle or a link) */
+  headerRight?: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
-const CARD_MARGIN = 16;
-const CARD_WIDTH = screenWidth - (CARD_MARGIN * 2);
-
-const CardComponent:React.FC<React.PropsWithChildren<CardProps>> =({ 
-  style,
+const CardComponent: React.FC<React.PropsWithChildren<CardProps>> = ({
   title,
+  subtitle,
+  icon,
+  iconTone,
+  headerRight,
+  style,
   contentContainerStyle,
-  children
+  children,
 }) => {
-
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
-
+  const hasHeader = !!(title || subtitle || icon || headerRight);
 
   return (
     <View
       style={[styles.container, style]}
-      testID={title.toLowerCase().replace(/\s+/g, '-') + '-card'}
+      testID={title ? title.toLowerCase().replace(/\s+/g, '-') + '-card' : undefined}
     >
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View style={[styles.contentContainer,contentContainerStyle]}>
+      {hasHeader && (
+        <View style={styles.header}>
+          {icon && <IconBadge name={icon} tone={iconTone} />}
+          <View style={styles.headerText}>
+            {title && <AppText variant="title">{title}</AppText>}
+            {subtitle && <AppText variant="caption" tone="secondary">{subtitle}</AppText>}
+          </View>
+          {headerRight}
+        </View>
+      )}
+      <View style={[styles.content, contentContainerStyle]}>
         {children}
       </View>
     </View>
   );
 };
 
-const createStyles = (colors: any) => StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
   container: {
-    backgroundColor: colors.cardBackground,
-    borderRadius: 12,
-    marginHorizontal: CARD_MARGIN,
-    marginVertical: 8,
-    shadowColor: colors.text,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    padding:4,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    width: CARD_WIDTH,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    padding: spacing.xl,
+    gap: spacing.lg,
+    ...elevation(colors),
   },
   header: {
-    padding:4,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    gap: spacing.md,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 8,
-    lineHeight: 29,
+  headerText: {
+    flex: 1,
+    gap: 2,
   },
-  contentContainer: {
-    fontSize: 18,
-    paddingHorizontal:8,
-    color: colors.textSecondary,
-    lineHeight: 20,
-    marginBottom: 12,
+  content: {
+    gap: spacing.lg,
   },
 });
-
 
 export default CardComponent;

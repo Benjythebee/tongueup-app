@@ -1,38 +1,23 @@
 import React, { memo } from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import { spacing } from '../theme/tokens';
+import AppText from './AppText';
 
 interface LoadingSpinnerProps {
   message?: string;
   size?: 'small' | 'large';
-  style?: object;
+  style?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = memo(({
-  message = 'Loading...',
+  message,
   size = 'large',
   style,
   testID
 }) => {
   const { colors } = useTheme();
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: colors.background,
-      padding: 20,
-    },
-    message: {
-      marginTop: 16,
-      fontSize: 16,
-      color: colors.textSecondary,
-      textAlign: 'center',
-      fontWeight: '500',
-    },
-  });
 
   return (
     <View style={[styles.container, style]} testID={testID}>
@@ -42,12 +27,22 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = memo(({
         testID={`${testID}-spinner`}
       />
       {message && (
-        <Text style={styles.message} testID={`${testID}-message`}>
+        <AppText variant="callout" tone="secondary" align="center" testID={`${testID}-message`}>
           {message}
-        </Text>
+        </AppText>
       )}
     </View>
   );
+});
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.lg,
+    padding: spacing.xl,
+    minHeight: 160,
+  },
 });
 
 LoadingSpinner.displayName = 'LoadingSpinner';

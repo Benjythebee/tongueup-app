@@ -68,7 +68,7 @@ Route names are typed in `src/types/navigation.ts` (`RootTabParamList`). `RootSt
 
 ### State (`src/context/`)
 - **`SettingsContext.tsx`** — `Settings` (`src/types/settings.ts`): `frequency`, `notificationsEnabled`, `quietTime {start,end}` (hours 0–23), `theme`. Persisted under `@app_tongue_patrol_settings`. Contains a small migration (`oldFrequencyToNew`) for old frequency indices.
-- **`ThemeContext.tsx`** — light/dark `ThemeColors` palettes; `toggleTheme` also persists via `updateSetting('theme', …)`. Initial theme is taken from `settings.theme` at first render, i.e. before settings finish loading from storage.
+- **`ThemeContext.tsx`** — exposes `theme`, `isDark`, `colors` (palettes live in `src/theme/tokens.ts`) and `toggleTheme`. The theme is derived from `settings.theme`, so toggling just calls `updateSetting('theme', …)`.
 - **`TimeSeriesData.tsx`** (`SavedDataProvider`, `useSavedTimeseries`) — array of `{ t, ok, nok }` persisted under `@app_tongue_timeseries_data`. `t` is **hours since epoch** (`Math.floor(Date.now()/3_600_000)`) — the "half-days" comments are outdated. On load it backfills zero points for every missing hour up to now, and seeds 12 blank hours if empty. `addPoint(ok, nok)` increments the current hour's bucket.
 
 ### Logging entries
@@ -83,7 +83,7 @@ Route names are typed in `src/types/navigation.ts` (`RootTabParamList`). `RootSt
 - **Known gaps** (be aware before changing reminder behavior):
   - The OS decides when background tasks run (≥15 min, and less often in Doze / battery saver). The chosen frequency is therefore a minimum gap between reminders, not an exact schedule.
   - Quiet hours are always applied from stored settings (default 22→8) even if the "set a quiet period" switch is off; that switch (`hasQuietTime`) is local component state and not persisted.
-  - An earlier approach — pre-scheduling a batch of date-triggered notifications that skip quiet hours — lives in `src/utils/notificationScheduler.ts` and the commented-out block in `ReminderCard.tsx`. It's currently unused.
+  - An earlier approach — pre-scheduling a batch of date-triggered notifications that skip quiet hours — lives in `src/utils/notificationScheduler.ts`. It's currently unused.
 - `usePushNotifications` fetches an Expo push token but nothing uses it; there is no remote push.
 
 ### Frequencies
@@ -95,13 +95,13 @@ Route names are typed in `src/types/navigation.ts` (`RootTabParamList`). `RootSt
 ### Localization
 - Translations are TS objects in `src/localization/en.ts` and `fr.ts`. `en.ts` is the typed source of truth (`src/i18next.d.ts` types `t()` keys from it), so add every new key to **both** files with the same shape.
 - `src/localization.ts` initializes i18next with device locale and a custom AsyncStorage-backed detector (`utils/languageDetectorPlugin.ts`, key `settings.lang`).
-- Some UI strings are still hard-coded English (e.g. the "Notes" title in `HomeScreen`, the "Data cleared" alert in `SettingsScreen`) — translate when touching them.
 
 ### Styling conventions
-- No styling library. Each component builds styles with a local `createStyles(colors)` → `StyleSheet.create(...)`, memoized via `useMemo(() => createStyles(colors), [colors])`. Use `useTheme().colors` rather than hard-coded colors where possible.
-- Screens (except Settings) wrap content in `ScreenWrapper` (pink `LinearGradient` over a `SafeAreaView`) with a large 42pt title header and a `ScrollView` with `gap: 25`.
-- Cards use `components/Card.tsx` (`CardComponent`, `title` + `children` props).
-- Shared inputs: `RollPicker` (scroll wheel, used by `FrequencySelector` and `TimeSelector`), `NumberSelector` / `LanguageSelector` (`react-native-element-dropdown`), `Button`, `ActionButton`.
+- Design tokens live in `src/theme/tokens.ts`: `lightColors` / `darkColors` (plum primary + warm cream, from the app icon; `success` = tongue on the roof, `error` = soft coral for "not quite"), `spacing`, `radius`, `typography` (type scale: `display`, `title`, `headline`, `body`, `callout`, `caption`, `overline`, `stat`), `elevation(colors)` and `toneColors(colors, tone)` for `primary | success | error | neutral` fg/soft-bg pairs. Use tokens instead of literal colors, sizes or font sizes.
+- No styling library. Components build styles with a local `createStyles(colors)` → `StyleSheet.create(...)`, memoized via `useMemo(() => createStyles(colors), [colors])`; color-independent styles are a plain module-level `StyleSheet`.
+- Text goes through `AppText` (`variant` from the type scale, `tone` for color) rather than raw `<Text>`.
+- Screens wrap content in `ScreenWrapper` (`title`, optional `eyebrow` / `subtitle`): background, soft brand gradient, safe-area top padding, the header and a `ScrollView` with consistent gutters/gaps. Content is a stack of cards.
+- Building blocks in `src/components/`: `Card` (`title`, `subtitle`, `icon`, `headerRight`), `ListRow` + `Divider` (settings-style row with an accessory), `Button` (`primary | secondary | danger | ghost`, `md | sm`, optional `icon`, `fullWidth`), `IconBadge`, `ChoiceTile` (big answer tile), `Stepper`, `Toggle`, `SegmentedControl` (used by `LanguageSelector`), `StatTile`, `CelebrationState`, `LoadingSpinner`, and the `RollPicker` wheel used by `FrequencySelector` / `TimeSelector`. Pressables use gesture-handler's `Touchable`.
 
 ### Unused / template leftovers
-`src/utils/index.ts` (formatters, mock `storage`), `src/hooks/index.ts` (`useForm`, `useKeyboard`, …), the `Card`/`User`/`AppState` types in `src/types/common.ts`, and `src/utils/getDeviceId.ts` (imports `expo-application`, which is only a transitive dependency, not in `package.json`) are not used by the app.
+`src/utils/index.ts` (formatters, mock `storage`), `src/hooks/index.ts` (`useForm`, `useKeyboard`, …), the `Card`/`User`/`AppState` types in `src/types/common.ts`, and `src/utils/getDeviceId.ts` (imports `expo-application`, which is only a transitive dependency, not in `package.json`) and `components/EmptyState.tsx` are not used by the app. `react-native-element-dropdown` is still in `package.json` but no longer imported.
