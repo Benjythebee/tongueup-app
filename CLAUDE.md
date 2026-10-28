@@ -25,11 +25,18 @@
 ```bash
 npm install
 npm start                  # expo start (needs a dev client; Expo Go won't run background tasks properly)
+npm run web                # expo start --web: browser preview of the UI (react-native-web)
 npm run android            # expo run:android — local native build, regenerates android/ via prebuild
 npx tsc --noEmit           # the only static check available
 eas build -p android --profile production
 eas submit -p android --profile production
 ```
+
+### Previewing UI changes
+- **Web (fastest, no device):** `.claude/launch.json` defines an `expo` config (`npx expo start --port 8081`); with `react-native-web` installed the same Metro server serves the web build at http://localhost:8081, so Claude can open it with the browser preview tool and set a mobile viewport (375×812). The phone can use that same server.
+- Web is for layout/colour/typography checks only, not a target platform. Known differences: system font differs from Android's Roboto (text runs slightly wider), no notifications or background tasks (the push-permission flow is skipped on web), URL paths like `/Reminder` don't route (no linking config, switch tabs by clicking), and `Animated` falls back to JS.
+- **Device:** `npm run android` (or `npx expo run:android --device <serial>`) builds and installs a debug build; `adb exec-out screencap -p > shot.png` grabs a screenshot. Don't run it with `CI=1`: Metro then disables file watching and edits won't reload.
+- Web-specific code paths in components: `App.tsx` preloads the Lucide font before first render on web; `RollPicker` settles its selection on a scroll-pause timer on web because react-native-web never fires `onMomentumScrollEnd`; `Button` puts its disabled opacity on a wrapper because gesture-handler's `Touchable` sets inline opacity on web.
 
 `npx tsc --noEmit` should pass with no errors. `npx expo export --platform android` is a quick way to check the JS bundle resolves without a native build.
 

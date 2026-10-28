@@ -38,7 +38,7 @@ export const ScreenWrapper: React.FC<PropsWithChildren<ScreenWrapperProps>> = ({
         colors={[colors.gradientTop, 'transparent']}
         style={styles.gradient}
         start={{ x: 0, y: 0 }}
-        end={{ x: 0.3, y: 1 }}
+        end={{ x: 0, y: 1 }}
       />
       <Animated.ScrollView
         style={styles.scroll}

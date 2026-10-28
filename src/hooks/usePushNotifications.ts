@@ -61,6 +61,10 @@ export const usePushNotifications = (): PushNotificationState => {
   }
 
   useEffect(() => {
+    // Notifications aren't supported on web (only used for the design preview)
+    if (Platform.OS === "web") {
+      return;
+    }
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
     });

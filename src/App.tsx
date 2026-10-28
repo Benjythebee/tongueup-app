@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { DarkTheme, DefaultTheme, NavigationContainer, Theme as NavigationTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,7 +8,8 @@ import HomeScreen from './screens/HomeScreen';
 import ReminderScreen from './screens/ReminderScreen';
 import { RootTabParamList } from './types/navigation';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
+import * as Font from 'expo-font';
 import { SettingsProvider } from './context/SettingsContext';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { SavedDataProvider } from './context/TimeSeriesData';
@@ -23,8 +24,25 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 
 setupTaskManager();
 
+// On web the icon font loads asynchronously; wait for it so the first paint (and any preview
+// screenshot) already has icons. Native embeds the font at build time via the expo-font plugin.
+const useWebIconFont = () => {
+  const [ready, setReady] = useState(Platform.OS !== 'web');
+  useEffect(() => {
+    if (!ready) {
+      Font.loadAsync({ Lucide: require('@react-native-vector-icons/lucide/fonts/Lucide.ttf') })
+        .finally(() => setReady(true));
+    }
+  }, []);
+  return ready;
+};
+
 const App: React.FC = () => {
   usePushNotifications();
+  const iconFontReady = useWebIconFont();
+  if (!iconFontReady) {
+    return null;
+  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

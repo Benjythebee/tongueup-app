@@ -44,9 +44,12 @@ const Button: React.FC<ButtonProps> = ({
     const { bg, fg } = variantColors(colors, variant);
     const styles = useMemo(() => createStyles(size), [size]);
 
+    // Layout and the disabled dimming live on a wrapper: Touchable drives its own opacity
+    // for press feedback, which overrides an opacity style on web
     return (
+        <View style={[styles.wrapper, fullWidth && styles.fullWidth, disabled && styles.disabled, style]}>
         <Touchable
-            style={[styles.button, { backgroundColor: bg }, fullWidth && styles.fullWidth, disabled && styles.disabled, style]}
+            style={[styles.button, { backgroundColor: bg }]}
             disabled={disabled}
             {...Platform.select({
                 android: { androidRipple: { color: variant === 'primary' ? 'rgba(255,255,255,0.25)' : colors.border } },
@@ -63,6 +66,7 @@ const Button: React.FC<ButtonProps> = ({
                 </AppText>
             </View>
         </Touchable>
+        </View>
     )
 }
 
@@ -74,6 +78,8 @@ const createStyles = (size: ButtonSize) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+    },
+    wrapper: {
         alignSelf: 'center',
     },
     fullWidth: {

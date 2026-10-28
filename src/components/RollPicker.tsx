@@ -7,6 +7,7 @@ import {
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Platform,
   ScrollViewInstance,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
@@ -39,20 +40,25 @@ const RollPicker: React.FC<RollPickerProps> = ({
   const {colors} = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(initialSelectedIndex);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollEndTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   
   const containerHeight = visibleItems * itemHeight;
   const paddingVertical = (containerHeight - itemHeight) / 2;
 
   const styles = useMemo(() => createStyles(colors), [colors]);
   
+  const scrollToInitial = () => {
+    scrollViewRef.current?.scrollTo({
+      y: initialSelectedIndex * itemHeight,
+      animated: false,
+    });
+  };
+
+  // Follow the initial value when it changes (e.g. once saved settings finish loading).
+  // The first scroll happens once the items are laid out: before that there is nothing to scroll to
   useEffect(() => {
-    // Initial scroll to selected item
-    setTimeout(() => {
-      scrollViewRef.current?.scrollTo({
-        y: initialSelectedIndex * itemHeight,
-        animated: false,
-      });
-    }, 100);
+    setSelectedIndex(initialSelectedIndex);
+    scrollToInitial();
   }, [initialSelectedIndex, itemHeight]);
 
   const handleScroll = Animated.event(
@@ -60,8 +66,7 @@ const RollPicker: React.FC<RollPickerProps> = ({
     { useNativeDriver: false }
   );
 
-  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
+  const settleAt = (offsetY: number) => {
     const index = Math.round(offsetY / itemHeight);
     const clampedIndex = Math.max(0, Math.min(index, data.length - 1));
     
@@ -77,6 +82,22 @@ const RollPicker: React.FC<RollPickerProps> = ({
       onSelectionChange(data[clampedIndex], clampedIndex);
     }
   };
+
+  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    settleAt(event.nativeEvent.contentOffset.y);
+  };
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    handleScroll(event);
+    // react-native-web never fires onMomentumScrollEnd: settle once scrolling pauses instead
+    if (Platform.OS === 'web') {
+      const offsetY = event.nativeEvent.contentOffset.y;
+      clearTimeout(scrollEndTimer.current);
+      scrollEndTimer.current = setTimeout(() => settleAt(offsetY), 150);
+    }
+  };
+
+  useEffect(() => () => clearTimeout(scrollEndTimer.current), []);
 
   const renderItem = (item: string, index: number) => {
     const inputRange = [
@@ -145,16 +166,13 @@ const RollPicker: React.FC<RollPickerProps> = ({
       
       <ScrollView
         ref={scrollViewRef}
+        onContentSizeChange={scrollToInitial}
         contentContainerStyle={{
           paddingVertical,
         }}
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
-        onScroll={(event)=>{
-          event.stopPropagation();
-          event.preventDefault();
-          handleScroll(event)
-        }}
+        onScroll={onScroll}
         onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={16}
         snapToInterval={itemHeight}
