@@ -22,11 +22,15 @@ const defaultSettings: Settings = {
 
 const oldFrequencyToNew = {
  9:7,
- 8:6 
+ 8:6
 }
 
-// Storage key
-const SETTINGS_STORAGE_KEY = '@app_tongue_patrol_settings';
+// Map frequency indices saved by older versions to the current `frequencies` list
+export const migrateFrequency = (frequency: number): number =>
+  (oldFrequencyToNew as any)[frequency] ?? frequency;
+
+// Storage key (also read by the background task)
+export const SETTINGS_STORAGE_KEY = '@app_tongue_patrol_settings';
 
 // Context
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -56,7 +60,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
       
       if (storedSettings) {
         const parsedSettings = JSON.parse(storedSettings);
-        parsedSettings.frequency = (oldFrequencyToNew as any)[parsedSettings.frequency] || parsedSettings.frequency;
+        parsedSettings.frequency = migrateFrequency(parsedSettings.frequency);
         setSettings({ ...defaultSettings, ...parsedSettings });
       }
     } catch (err) {
