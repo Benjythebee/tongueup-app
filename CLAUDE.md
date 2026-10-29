@@ -27,6 +27,7 @@ npm install
 npm start                  # expo start (needs a dev client; Expo Go won't run background tasks properly)
 npm run web                # expo start --web: browser preview of the UI (react-native-web)
 npm run android            # expo run:android — local native build, regenerates android/ via prebuild
+npm run export:web-demo    # web build for the live demo on the marketing site (see below)
 npx tsc --noEmit           # the only static check available
 eas build -p android --profile production
 eas submit -p android --profile production
@@ -36,9 +37,12 @@ eas submit -p android --profile production
 - **Web (fastest, no device):** `.claude/launch.json` defines an `expo` config (`npx expo start --port 8081`); with `react-native-web` installed the same Metro server serves the web build at http://localhost:8081, so Claude can open it with the browser preview tool and set a mobile viewport (375×812). The phone can use that same server.
 - Web is for layout/colour/typography checks only, not a target platform. Known differences: system font differs from Android's Roboto (text runs slightly wider), no notifications or background tasks (the push-permission flow is skipped on web), URL paths like `/Reminder` don't route (no linking config, switch tabs by clicking), and `Animated` falls back to JS.
 - **Device:** `npm run android` (or `npx expo run:android --device <serial>`) builds and installs a debug build; `adb exec-out screencap -p > shot.png` grabs a screenshot. Don't run it with `CI=1`: Metro then disables file watching and edits won't reload.
-- Web-specific code paths in components: `App.tsx` preloads the Lucide font before first render on web; `RollPicker` settles its selection on a scroll-pause timer on web because react-native-web never fires `onMomentumScrollEnd`; `Button` puts its disabled opacity on a wrapper because gesture-handler's `Touchable` sets inline opacity on web.
+- Web-specific code paths in components: `App.tsx` preloads the Lucide font before first render on web and gives the tab bar a taller height there (no bottom inset, so the default squeezes the labels); `RollPicker` settles its selection on a scroll-pause timer on web because react-native-web never fires `onMomentumScrollEnd`; `Button` puts its disabled opacity on a wrapper because gesture-handler's `Touchable` sets inline opacity on web.
 
 `npx tsc --noEmit` should pass with no errors. `npx expo export --platform android` is a quick way to check the JS bundle resolves without a native build.
+
+### Marketing site live demo
+The site (https://tongueup.benjylarcher.com/) lives in the separate `benjylarcher` repo (`tongueup/` Vite app, assets in `public/tongueup/`) and embeds the real app in a phone frame. `npm run export:web-demo` (`scripts/export-web-demo.js`) exports the web build with base URL `/demo` (via `WEB_BASE_URL` in `app.config.js`) into `../benjylarcher/public/tongueup/demo`; pass another output dir after `--` if that repo lives elsewhere. Re-run it and commit the output there whenever the app UI changes. The site seeds the demo's AsyncStorage (= localStorage, same origin) with sample history and its own language/theme in `tongueup/demo.ts`, so keep that in step if storage keys or the data format change. To preview the site, `.claude/launch.json` has a `site` config (Vite on http://localhost:5181, run from the sibling repo).
 
 ## Build & release notes
 

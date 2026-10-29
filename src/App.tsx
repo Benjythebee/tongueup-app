@@ -97,6 +97,8 @@ const Navigation = ()=>{
                     borderTopColor: colors.border,
                     borderTopWidth: StyleSheet.hairlineWidth,
                     elevation: 0,
+                    // No bottom inset on web, so the default 49px bar squeezes the labels
+                    ...(Platform.OS === 'web' && { height: 58 }),
                   },
                   tabBarLabelStyle: {
                     fontSize: 12,

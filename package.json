@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "export:web-demo": "node scripts/export-web-demo.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~58.0.15",
