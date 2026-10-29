@@ -11,7 +11,7 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { Platform, StyleSheet } from 'react-native';
 import * as Font from 'expo-font';
 import { SettingsProvider } from './context/SettingsContext';
-import { usePushNotifications } from './hooks/usePushNotifications';
+import { useNotificationSetup, useReminderSync } from './hooks/useReminders';
 import { SavedDataProvider } from './context/TimeSeriesData';
 import SettingsScreen from './screens/SettingsScreen';
 import Icon from '@react-native-vector-icons/lucide';
@@ -38,7 +38,7 @@ const useWebIconFont = () => {
 };
 
 const App: React.FC = () => {
-  usePushNotifications();
+  useNotificationSetup();
   const iconFontReady = useWebIconFont();
   if (!iconFontReady) {
     return null;
@@ -67,6 +67,7 @@ export default App;
 const Navigation = ()=>{
   const {colors, isDark} = useTheme();
   const {t} = useTranslation();
+  useReminderSync();
 
   // Keeps navigator backgrounds in sync with the app theme (no white flash between tabs in dark mode)
   const navigationTheme = useMemo<NavigationTheme>(() => {

@@ -5,18 +5,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 interface SettingsContextType {
   settings: Settings;
   updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => Promise<void>;
+  updateSettings: (changes: Partial<Settings>) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
 
-// Default settings
-const defaultSettings: Settings = {
+// Default settings (also merged into stored settings by the reminder scheduler)
+export const defaultSettings: Settings = {
   frequency: 1, // Default frequency value
   notificationsEnabled: false, // Default notification setting
   quietTime: {
     start: 22, // Default quiet time start hour (10 PM)
     end: 8, // Default quiet time end hour (8 AM)
   },
+  // Older versions always applied quiet hours, so keep them on for existing users
+  quietTimeEnabled: true,
+  strictTiming: false,
+  reminderAnchorMinute: 8 * 60,
   theme:'light', // Default theme
 };
 
@@ -81,14 +86,12 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     }
   };
 
-  const updateSetting = async <K extends keyof Settings>(
-    key: K, 
-    value: Settings[K]
-  ): Promise<void> => {
+  // Applies several changes at once (separate updateSetting calls in one handler would overwrite each other)
+  const updateSettings = async (changes: Partial<Settings>): Promise<void> => {
     try {
       setError(null);
-      
-      const newSettings = { ...settings, [key]: value };
+
+      const newSettings = { ...settings, ...changes };
       setSettings(newSettings);
       await saveSettings(newSettings);
     } catch (err) {
@@ -98,9 +101,15 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     }
   };
 
+  const updateSetting = <K extends keyof Settings>(
+    key: K,
+    value: Settings[K]
+  ): Promise<void> => updateSettings({ [key]: value } as Partial<Settings>);
+
   const contextValue: SettingsContextType = {
     settings,
     updateSetting,
+    updateSettings,
     loading,
     error,
   };
