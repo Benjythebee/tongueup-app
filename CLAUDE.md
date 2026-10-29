@@ -100,7 +100,7 @@ Route names are typed in `src/types/navigation.ts` (`RootTabParamList`). `RootSt
 
 ### Localization
 - Translations are TS objects in `src/localization/en.ts` and `fr.ts`. `en.ts` is the typed source of truth (`src/i18next.d.ts` types `t()` keys from it), so add every new key to **both** files with the same shape.
-- `src/localization.ts` initializes i18next with device locale and a custom AsyncStorage-backed detector (`utils/languageDetectorPlugin.ts`, key `settings.lang`).
+- `src/localization.ts` initializes i18next in the device language, then applies the language saved under `settings.lang` (`languageRestored` resolves once done). Change language with `setAppLanguage()`, which also saves it; a plain `i18n.changeLanguage` isn't persisted.
 
 ### Styling conventions
 - Design tokens live in `src/theme/tokens.ts`: `lightColors` / `darkColors` (plum primary + warm cream, from the app icon; `success` = tongue on the roof, `error` = soft coral for "not quite"), `spacing`, `radius`, `typography` (type scale: `display`, `title`, `headline`, `body`, `callout`, `caption`, `overline`, `stat`), `elevation(colors)` and `toneColors(colors, tone)` for `primary | success | error | neutral` fg/soft-bg pairs. Use tokens instead of literal colors, sizes or font sizes.

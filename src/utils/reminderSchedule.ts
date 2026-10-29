@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Settings } from '../types/settings';
 import { frequencies } from '../components/FrequencySelector';
 import { defaultSettings, migrateFrequency, SETTINGS_STORAGE_KEY } from '../context/SettingsContext';
-import i18n from '../localization';
+import i18n, { languageRestored } from '../localization';
 
 // Reminders are pre-scheduled OS alarms (one DAILY trigger per time slot), so they fire on time
 // without the app running. expo-notifications re-arms them after a reboot or an app update.
@@ -85,7 +85,7 @@ export const ensureReminderChannel = async () => {
     name: i18n.t('reminders.channelName'),
     importance: Notifications.AndroidImportance.HIGH,
     vibrationPattern: [0, 250, 500, 250],
-    sound: 'default',
+    // No `sound`: on a channel it names a bundled sound file; leaving it out uses the system default
     lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
   });
 };
@@ -110,6 +110,8 @@ const applySchedule = async (givenSettings?: Settings) => {
   if (Platform.OS === 'web') {
     return;
   }
+  // Notification text is baked in when scheduling, so wait for the saved language
+  await languageRestored;
   const settings = givenSettings ?? (await loadSettings());
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
 
