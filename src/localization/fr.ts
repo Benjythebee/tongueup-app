@@ -17,7 +17,20 @@ export default {
                 catchUpHint:"Loin de ton téléphone un moment ? Note les fois où tu as pensé à ta langue.",
         },
         stats:{
-                window:"Dernières 48 heures",
+                ranges:{
+                        day:"Jour",
+                        week:"Semaine",
+                        month:"Mois",
+                        year:"Année",
+                },
+                last:{
+                        day:"Dernières 24 heures",
+                        week:"7 derniers jours",
+                        month:"30 derniers jours",
+                        year:"12 derniers mois",
+                },
+                previous:"Période précédente",
+                next:"Période suivante",
                 onRoof:"Au palais",
                 offRoof:"Pas au palais",
                 rate:"Réussite",

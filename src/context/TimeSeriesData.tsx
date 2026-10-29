@@ -1,14 +1,14 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
-import { Settings } from "../types/settings";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // Type definitions
-interface TimeSeriesDataPoint {
-  t: number; // Timestamp in half-days
+export interface TimeSeriesDataPoint {
+  t: number; // Hours since epoch
   ok: number;
   nok: number;
 }
 
 interface TimeSeriesContextType {
+  /** Hours with at least one check-in, sorted by `t`. Empty hours aren't stored. */
   data:TimeSeriesDataPoint[]
   loading: boolean;
     addPoint: (ok?: number, notok?: number) => Promise<void>;
@@ -18,14 +18,13 @@ interface TimeSeriesContextType {
     getDataInRange: (startTime: number, endTime: number) => TimeSeriesDataPoint[];
 }
 
-// Default settings
-const defaultValues = {
-  data:[],
-  loading:false
-};
-
 // Storage key
 const STORAGE_KEY = '@app_tongue_timeseries_data';
+
+// The whole history is one AsyncStorage value, and Android's SQLite cursor can't read a value
+// over ~2 MB. A point is ~30 bytes of JSON, so this keeps the value around 1.5 MB: years of
+// check-ins every hour. The oldest hours are dropped past it.
+const MAX_STORED_POINTS = 50_000;
 
 // Context
 const TimeSeriesContext = createContext<TimeSeriesContextType | undefined>(undefined);
@@ -35,71 +34,27 @@ interface TimeSeriesProviderProps {
   children: ReactNode;
 }
 
+export const HOUR_MS = 60 * 60 * 1000;
+
+const dateNow = ()=>{
+  return Math.floor(Date.now() / HOUR_MS); // Convert to hours - one X = one hour
+}
+
+const pointToTimeStamp = (number: number): Date => {
+  return new Date(number * HOUR_MS); // Convert hours back to milliseconds
+}
+
+// Older versions stored a zero point for every hour since install: keep only real check-ins
+const compact = (dataPoints: TimeSeriesDataPoint[]) =>
+  dataPoints
+    .filter(point => point.ok > 0 || point.nok > 0)
+    .sort((a, b) => a.t - b.t)
+    .slice(-MAX_STORED_POINTS);
+
 // Provider Component
 export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children }) => {
-  const [data, setData] = useState<TimeSeriesDataPoint[]>(defaultValues.data);
+  const [data, setData] = useState<TimeSeriesDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const _createBlankPoints = ()=>{
-    const now = dateNow();
-    const blankPoints: TimeSeriesDataPoint[] = [];
-    for (let i = 0; i < 12; i++) { // Create 12 hours points
-      const halfDay = now - i;
-      blankPoints.push({ t: halfDay, ok: 0, nok: 0 });
-    }
-    return blankPoints.sort((a, b) => a.t - b.t)
-  }
-
-  const dateNow = ()=>{
-    return Math.floor(Date.now() / 1000 / 60 / 60); // Convert to hours - one X = one hour
-  }
-
-  const pointToTimeStamp = (number: number): Date => {
-    return new Date(number * 1000 * 60 * 60); // Convert hours back to milliseconds
-  }
-
-  const getDataAt = (halfDay: number): TimeSeriesDataPoint | undefined => {
-    return data.find(point => point.t === halfDay);
-  }
-
-  const _addEmptyPointsBetween = (dataPoints: TimeSeriesDataPoint[]) => {
-    // Say the last point was 2 hours in the past, we need to add 2 empty hour point
-    const now = dateNow();
-    const lastPoint = dataPoints[dataPoints.length - 1];
-    const emptyPoints: TimeSeriesDataPoint[] = [];
-    for (let i = lastPoint.t + 1; i <= now; i++) {
-      emptyPoints.push({ t: i, ok: 0, nok: 0 });
-    }
-    dataPoints.push(...emptyPoints);
-    return dataPoints
-  }
-
-  // Load data from storage
-  const loadData = useCallback(async () => {
-    try {
-      const storedData = await AsyncStorage.getItem(STORAGE_KEY);
-      if (storedData) {
-        let parsedData: TimeSeriesDataPoint[] = JSON.parse(storedData);
-        if(!parsedData || parsedData.length==0){
-          parsedData = _createBlankPoints()
-        }
-
-        // Add empty points in between if needed
-        _addEmptyPointsBetween(parsedData);
-        saveData(parsedData)
-        setData(parsedData || []);
-      }else{
-          const parsedData = _createBlankPoints()
-          saveData(parsedData)
-          setData(parsedData || []);
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-    } finally {
-
-      setLoading(false);
-    }
-  }, []);
 
   // Save data to storage
   const saveData = useCallback(async (dataPoints: TimeSeriesDataPoint[]) => {
@@ -110,33 +65,35 @@ export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children 
     }
   }, []);
 
+  // Load data from storage
+  const loadData = useCallback(async () => {
+    try {
+      const storedData = await AsyncStorage.getItem(STORAGE_KEY);
+      const parsedData: TimeSeriesDataPoint[] = (storedData && JSON.parse(storedData)) || [];
+      const compacted = compact(parsedData);
+      if (compacted.length !== parsedData.length) {
+        await saveData(compacted);
+      }
+      setData(compacted);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [saveData]);
+
   // Add new data point
   const addPoint = useCallback(async (ok?: number,notok?:number) => {
-    const now = dateNow()
-    const oldValue = getDataAt(now);
     if(!ok && !notok){
       return
     }
-
-    if(oldValue){
-      oldValue!.ok += ok || 0;
-      oldValue!.nok += notok || 0;
-      const updated = [...data]
-      setData(updated);
-      await saveData(updated);
-
-    }else{
-      const newDataPoint = {
-        t: now,
-        ok: ok || 0,
-        nok: notok || 0,
-      };
-      const updatedData = [...data, newDataPoint].sort((a, b) => a.t - b.t);
-      setData(updatedData);
-      await saveData(updatedData);
-    }
-
-
+    const now = dateNow()
+    const last = data[data.length - 1];
+    const updated = last?.t === now
+      ? [...data.slice(0, -1), { t: now, ok: last.ok + (ok || 0), nok: last.nok + (notok || 0) }]
+      : compact([...data, { t: now, ok: ok || 0, nok: notok || 0 }]);
+    setData(updated);
+    await saveData(updated);
   }, [data, saveData]);
 
 
@@ -175,10 +132,10 @@ export const SavedDataProvider: React.FC<TimeSeriesProviderProps> = ({ children 
 // Custom Hook
 export const useSavedTimeseries = (): TimeSeriesContextType => {
   const context = useContext(TimeSeriesContext);
-  
+
   if (context === undefined) {
-    throw new Error('useSettings must be used within a SettingsProvider');
+    throw new Error('useSavedTimeseries must be used within a SavedDataProvider');
   }
-  
+
   return context;
 };

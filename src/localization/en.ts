@@ -17,7 +17,20 @@ export default {
                 catchUpHint:"Away from your phone for a while? Log the times you noticed your tongue.",
         },
         stats:{
-                window:"Last 48 hours",
+                ranges:{
+                        day:"Day",
+                        week:"Week",
+                        month:"Month",
+                        year:"Year",
+                },
+                last:{
+                        day:"Last 24 hours",
+                        week:"Last 7 days",
+                        month:"Last 30 days",
+                        year:"Last 12 months",
+                },
+                previous:"Previous period",
+                next:"Next period",
                 onRoof:"On the roof",
                 offRoof:"Off the roof",
                 rate:"Success",

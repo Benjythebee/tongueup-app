@@ -15,10 +15,12 @@ interface SegmentedControlProps<T extends string> {
   options: SegmentOption<T>[];
   value: T;
   onChange: (value: T) => void;
+  /** Share the full width equally between the segments */
+  stretch?: boolean;
 }
 
 /** Pill-shaped picker for a small set of mutually exclusive options */
-const SegmentedControl = <T extends string>({ options, value, onChange }: SegmentedControlProps<T>) => {
+const SegmentedControl = <T extends string>({ options, value, onChange, stretch }: SegmentedControlProps<T>) => {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -29,13 +31,18 @@ const SegmentedControl = <T extends string>({ options, value, onChange }: Segmen
         return (
           <Touchable
             key={option.value}
-            style={[styles.segment, selected && styles.selected]}
+            style={[styles.segment, stretch && styles.stretched, selected && styles.selected]}
             onPress={() => onChange(option.value)}
             activeOpacity={0.7}
             accessibilityRole="radio"
             accessibilityState={{ selected }}
           >
-            <AppText variant="callout" tone={selected ? 'primary' : 'secondary'} style={selected && styles.selectedText}>
+            <AppText
+              variant="callout"
+              tone={selected ? 'primary' : 'secondary'}
+              style={selected && styles.selectedText}
+              numberOfLines={1}
+            >
               {option.label}
             </AppText>
           </Touchable>
@@ -57,6 +64,10 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.pill,
     alignItems: 'center',
+  },
+  stretched: {
+    flex: 1,
+    paddingHorizontal: spacing.xs,
   },
   selected: {
     backgroundColor: colors.surface,
